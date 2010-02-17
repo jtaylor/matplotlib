@@ -99,6 +99,15 @@ class Line3D(lines.Line2D):
         except:
             pass
         self._verts3d = juggle_axes(xs, ys, zs, zdir)
+        
+    def set_data(self, xs, ys, zs = None):
+    
+        # This function might be called elsewhere from 2D code, so we must be
+        # able to pass it through
+        if zs == None:
+            lines.Line2D.set_data(self, xs, ys)
+        else:
+            self._verts3d = xs,ys,zs
 
     def draw(self, renderer):
         xs3d, ys3d, zs3d = self._verts3d
