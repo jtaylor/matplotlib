@@ -101,6 +101,29 @@ class Axes3D(Axes):
         self.w_zaxis = axis3d.ZAxis('z', self.zz_viewLim.intervalx,
                             self.zz_dataLim.intervalx, self)
 
+
+    def equal(self):
+        """Tries to center the viewing volume on the available object.
+        """
+
+        xmin, xmax = self.xy_dataLim.intervalx
+        ymin, ymax = self.xy_dataLim.intervaly
+        # zz_dataLim is using a Bounding box class that was meant for x,y
+        # values and just using the x and y components reduntantly.  Thus
+        # we choose to pull this information out of the x component.
+        zmin, zmax = self.zz_dataLim.intervalx
+
+        dx,dy,dz = xmax - xmin, ymax - ymin, zmax - zmin
+        xbar, ybar, zbar = xmin + dx/2.0, ymin + dy/2.0, zmin + dz/2.0
+
+        scale = max(dx,dy,dz)/2.0
+
+        # Rescale the three axis' accordingly.
+        self.set_xlim3d(xbar - scale, xbar + scale)
+        self.set_ylim3d(ybar - scale, ybar + scale)
+        self.set_zlim3d(zbar - scale, zbar + scale)
+
+
     def unit_cube(self, vals=None):
         minx, maxx, miny, maxy, minz, maxz = vals or self.get_w_lims()
         xs, ys, zs = ([minx, maxx, maxx, minx, minx, maxx, maxx, minx],
